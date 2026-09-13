@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17191c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sentier">
+  <title>Sentier — journal de marche</title>
+  <link rel="manifest" href="./sentier-manifest.webmanifest">
+  <link rel="icon" href="./sentier-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./sentier-icon-192.png">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" referrerpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" referrerpolicy="no-referrer"></script>
+  <style>
+    :root { --ink:#10281f; --ink-2:#25483a; --paper:#f6f4ed; --surface:#fffdf7; --line:#dce2d8; --muted:#66736b; --accent:#e76f51; --accent-dark:#b7452e; --lime:#d8eea3; --blue:#2d6f92; --shadow:0 10px 30px rgba(20,52,39,.11); --radius:18px; }
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-rounded,"Avenir Next",Avenir,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased} button,input{font:inherit} button{cursor:pointer} button:focus-visible,a:focus-visible{outline:3px solid #e7a98f;outline-offset:3px}.app{max-width:760px;min-height:100svh;margin:auto;background:var(--paper);padding-bottom:82px}.topbar{height:70px;padding:env(safe-area-inset-top) 18px 0;display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:#fff}.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.4px;font-size:1.08rem}.brand-mark{width:29px;height:29px;border-radius:50% 50% 48% 48%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:17px}.icon-btn{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:12px;padding:9px 11px;font-size:.83rem;font-weight:700}.icon-btn[aria-pressed="true"]{background:var(--lime);color:var(--ink)}.view{display:none}.view.active{display:block}.map-wrap{height:min(44svh,440px);position:relative;background:#dce8db}.map{height:100%;width:100%}.map-note{position:absolute;z-index:500;inset:auto 15px 15px;padding:10px 12px;border-radius:12px;background:rgba(16,40,31,.88);color:#fff;font-size:.82rem;line-height:1.35;max-width:350px}.map-note.hidden{display:none}.live-pill{position:absolute;z-index:500;top:13px;left:13px;display:none;align-items:center;gap:7px;border-radius:99px;background:#fff;padding:7px 10px;font-size:.76rem;font-weight:800;box-shadow:0 3px 13px #0002}.live-pill.show{display:flex}.dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}.live-pill.paused .dot{background:#f2a93b}.content{padding:18px}.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;min-height:88px}.stat .label{font-size:.71rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}.stat .value{margin-top:6px;font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:1.38rem;font-weight:800;letter-spacing:-.07em}.stat .unit{font-family:inherit;font-size:.73rem;color:var(--muted);letter-spacing:0;margin-left:3px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.btn{min-height:51px;border:0;border-radius:14px;padding:11px 14px;font-weight:800;letter-spacing:-.1px;transition:transform .15s,background .15s}.btn:active{transform:scale(.97)}.btn-primary{background:var(--ink);color:#fff;grid-column:1/-1}.btn-primary.tracking{background:var(--accent)}.btn-secondary{background:#e6ede5;color:var(--ink)}.btn-danger{background:#f9ded7;color:#962f1d}.btn:disabled{opacity:.42;cursor:not-allowed}.hint{color:var(--muted);font-size:.82rem;line-height:1.45;margin:15px 2px 0}.notice{margin:0 0 14px;padding:11px 13px;border-left:4px solid var(--accent);background:#fff2ed;border-radius:0 10px 10px 0;font-size:.84rem;line-height:1.38}.notice.hidden{display:none}.bottom-nav{position:fixed;z-index:900;left:50%;bottom:0;transform:translateX(-50%);width:min(760px,100%);display:grid;grid-template-columns:1fr 1fr;background:rgba(255,253,247,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 14px calc(8px + env(safe-area-inset-bottom))}.nav-btn{border:0;background:transparent;color:var(--muted);padding:7px 10px;font-weight:700;font-size:.78rem}.nav-btn .nav-icon{display:block;font-size:18px;line-height:19px}.nav-btn.active{color:var(--ink)}.section-title{margin:2px 0 14px;font-size:1.16rem;letter-spacing:-.4px}.week-card{background:var(--ink);color:#fff;border-radius:var(--radius);padding:17px;margin-bottom:19px;box-shadow:var(--shadow)}.week-card h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;color:#d9e6dc}.week-totals{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px}.week-total b{display:block;font-size:1.28rem;font-family:ui-monospace,monospace;letter-spacing:-.08em}.week-total span{font-size:.68rem;color:#c4d2c7;text-transform:uppercase;letter-spacing:.06em}.chart{height:70px;margin-top:16px;display:flex;align-items:end;gap:6px}.bar-wrap{height:100%;display:flex;flex:1;flex-direction:column;align-items:center;justify-content:end;gap:4px;min-width:0}.bar{width:100%;max-width:42px;background:var(--lime);border-radius:5px 5px 1px 1px;min-height:2px}.bar.current{background:var(--accent)}.bar-label{font-size:.59rem;color:#b9c9bc}.empty{text-align:center;padding:40px 20px;color:var(--muted)}.empty .empty-icon{font-size:40px;margin-bottom:8px}.activity{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:12px;margin-bottom:11px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 10px #172c2010}.preview{height:92px;border-radius:10px;background:#e8efe5;overflow:hidden}.preview canvas{width:100%;height:100%}.activity-main{min-width:0}.activity-date{font-size:.76rem;color:var(--muted);font-weight:700}.activity-distance{font-family:ui-monospace,monospace;font-size:1.34rem;font-weight:800;letter-spacing:-.07em;margin:3px 0}.activity-meta{font-size:.77rem;color:var(--muted)}.activity-actions{display:flex;gap:8px;margin-top:9px}.text-btn{border:0;background:transparent;padding:0;color:var(--blue);font-size:.76rem;font-weight:800}.text-btn.delete{color:#b6412e}.overlay{position:fixed;inset:0;z-index:1100;background:var(--paper);display:none;flex-direction:column}.overlay.open{display:flex}.overlay-head{min-height:64px;padding:env(safe-area-inset-top) 16px 0;display:flex;align-items:center;gap:12px;background:var(--ink);color:#fff}.back-btn{border:0;background:#ffffff20;color:#fff;border-radius:10px;width:38px;height:38px;font-size:22px}.overlay-title{font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.detail-map{height:38svh;min-height:225px}.detail-content{padding:17px;overflow:auto}.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0 18px}.detail-actions .btn{font-size:.82rem;min-height:44px}.splits h2{font-size:1rem;margin:0 0 10px}.split-row{display:flex;justify-content:space-between;padding:10px 2px;border-bottom:1px solid var(--line);font-family:ui-monospace,monospace;font-size:.84rem}.split-row span:first-child{font-family:inherit;color:var(--muted);font-weight:700}.replay-map{flex:1;min-height:0;background:#dce8db}.replay-panel{position:absolute;z-index:5;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));padding:12px;background:rgba(255,253,247,.95);backdrop-filter:blur(8px);border-radius:15px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px}.replay-readout{flex:1;font-family:ui-monospace,monospace;font-size:.78rem;font-weight:700}.speed-group{display:flex;gap:4px}.speed{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;font-size:.72rem;font-weight:800}.speed.active{background:var(--ink);color:#fff;border-color:var(--ink)}.loading{position:absolute;z-index:10;inset:64px 0 0;display:grid;place-items:center;background:#10281fdd;color:#fff;text-align:center;padding:25px}.loading.hidden{display:none}.leaflet-control-attribution{font-size:9px!important}.leaflet-container{font-family:inherit}.position-marker{width:16px;height:16px;border:3px solid #fff;border-radius:50%;background:#2d6f92;box-shadow:0 0 0 3px #2d6f9255}.map-fallback{height:100%;display:grid;place-items:center;padding:20px;text-align:center;color:var(--muted);line-height:1.5}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(min-width:560px){.stats-grid{grid-template-columns:repeat(4,1fr)}.stat{min-height:96px}.stat .value{font-size:1.25rem}.controls{grid-template-columns:1fr 1fr 1fr}.btn-primary{grid-column:auto}.activity{grid-template-columns:126px 1fr}.preview{height:105px}}
+    /* Interface Sentier 2 : tableau de bord personnel, inspiré des usages
+       des applications sportives sans reprendre leur identité visuelle. */
+    :root{--ink:#17191c;--ink-2:#30343a;--paper:#f5f5f3;--surface:#fff;--line:#e0e2e3;--muted:#6b7076;--accent:#f15a2a;--accent-dark:#cf4218;--lime:#dff2cc;--blue:#256c9c;--shadow:0 12px 32px rgba(23,25,28,.10);--radius:16px}
+    body{background:#e8e9e8;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    .app{max-width:840px;background:var(--paper);box-shadow:0 0 50px rgba(0,0,0,.08)}
+    .topbar{height:66px;background:var(--ink);box-shadow:0 1px 0 #ffffff18;padding-left:20px;padding-right:20px}
+    .brand{font-size:1.02rem;letter-spacing:.08em;text-transform:uppercase}.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;font-size:18px}.icon-btn{border-radius:99px;padding:8px 10px;font-size:.74rem}.icon-btn[aria-pressed="true"]{background:#ffffff1b;color:#fff}
+    .home-hero{position:relative;overflow:hidden;padding:32px 20px 28px;color:#fff;background:linear-gradient(135deg,#17191c 0%,#2e343c 72%,#393e43 100%)}
+    .home-hero:after{content:"";position:absolute;width:220px;height:220px;right:-80px;bottom:-125px;border:34px solid #ffffff16;border-radius:50%}.home-hero>*{position:relative;z-index:1}.eyebrow{margin:0 0 9px;color:#f7b39d;font-size:.69rem;font-weight:800;letter-spacing:.13em}.home-hero h1{max-width:500px;margin:0;font-size:clamp(1.8rem,7vw,2.5rem);letter-spacing:-.055em;line-height:1.05}.home-hero p{max-width:430px;margin:10px 0 20px;color:#d9dddf;font-size:.92rem;line-height:1.45}.btn-accent{background:var(--accent);color:#fff;grid-column:auto;box-shadow:0 7px 18px #0004}.btn-accent:hover{background:var(--accent-dark)}
+    .home-content{padding-top:22px}.section-row{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:4px 0 12px}.section-row h2{margin:0;font-size:1.08rem;letter-spacing:-.035em}.section-row span{font-size:.74rem;color:var(--muted);font-weight:700}
+    .dashboard-week{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:26px}.goal-card{display:flex;align-items:center;gap:17px;padding:17px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 15px #11111108}.goal-ring{--progress:0%;flex:0 0 88px;width:88px;height:88px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(circle at center,#fff 0 57%,transparent 58%),conic-gradient(var(--accent) var(--progress),#edf0f1 0)}.goal-ring strong{font-size:1.03rem;letter-spacing:-.06em}.goal-ring small{margin-top:-2px;color:var(--muted);font-size:.62rem;font-weight:700}.goal-copy{min-width:0;flex:1}.goal-copy .small-label{font-size:.68rem;font-weight:800;letter-spacing:.08em;color:var(--muted)}.goal-copy h3{margin:4px 0 5px;font-size:1.05rem;letter-spacing:-.035em}.goal-copy p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.4}.goal-edit{border:0;background:transparent;color:var(--blue);font-size:.74rem;font-weight:800;padding:7px 0 0}
+    .metric-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric-mini{padding:13px 10px;border-radius:13px;background:var(--ink);color:#fff}.metric-mini b{display:block;font-size:1.05rem;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.metric-mini span{display:block;margin-top:3px;color:#c8cdd0;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}.metric-mini:nth-child(2){background:#303840}.metric-mini:nth-child(3){background:#4a535b}
+    .recent-card{display:grid;grid-template-columns:104px 1fr;gap:13px;width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:11px;background:var(--surface);text-align:left;box-shadow:0 4px 16px #11111108}.recent-card:focus-visible{outline:3px solid #f5ae96;outline-offset:2px}.recent-map{height:103px;border-radius:10px;overflow:hidden;background:#eff1ee}.recent-map canvas{width:100%;height:100%}.recent-main{min-width:0}.recent-kicker{font-size:.68rem;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}.recent-title{margin:4px 0;font-size:1.06rem;font-weight:800;letter-spacing:-.04em}.recent-meta{color:var(--muted);font-size:.77rem;line-height:1.45}.empty-compact{border:1px dashed #c8ccce;border-radius:var(--radius);padding:20px;color:var(--muted);font-size:.84rem;line-height:1.45}.privacy-card{display:flex;gap:10px;margin:24px 0 8px;padding:13px 14px;border-radius:13px;background:#e7ecee;color:#405057;font-size:.76rem;line-height:1.42}.privacy-card b{display:block;margin-bottom:2px;color:#1e292f}.privacy-icon{font-size:19px;line-height:1}
+    .tracker-intro{padding:19px 18px 15px;background:#fff}.tracker-intro h1{margin:2px 0 10px;font-size:1.38rem;letter-spacing:-.045em}.tracker-intro p{margin:0;color:var(--muted);font-size:.82rem;line-height:1.42}.type-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px;padding:4px;background:#eceeef;border-radius:12px}.type-btn{min-height:36px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:.77rem;font-weight:800}.type-btn.active{background:#fff;color:var(--ink);box-shadow:0 2px 8px #00000012}.map-wrap{height:min(39svh,420px)}.map-note{background:#17191ce8}.live-pill{border-radius:99px}.dot,.position-marker{background:var(--accent)}
+    .stat{border-radius:14px;box-shadow:0 2px 9px #11111106}.stat .label{font-size:.65rem}.stat .value{font-size:1.31rem}.btn{border-radius:12px}.btn-primary{background:var(--accent)}.btn-primary.tracking{background:#303840}.btn-secondary{background:#e8ecee}.btn-danger{background:#fbe2dc}.hint{font-size:.78rem}.notice{border-left-color:var(--accent)}
+    .bottom-nav{max-width:840px;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,.96);padding-left:10px;padding-right:10px}.nav-btn{padding:6px 6px;color:#80858a}.nav-btn .nav-icon{font-size:17px}.nav-btn.active{color:var(--accent)}.nav-btn.active .nav-icon{transform:translateY(-1px)}
+    .section-title{font-size:1.4rem;margin:2px 0 5px}.history-subtitle{margin:0 0 17px;color:var(--muted);font-size:.81rem}.week-card{background:linear-gradient(135deg,#202429,#40474e);border-radius:var(--radius);margin-bottom:20px}.week-card h2{color:#d7dbdd}.bar.current{background:var(--accent)}.bar{background:#d4e8c4}.activity{grid-template-columns:100px 1fr;border-radius:15px}.activity-type{font-size:.65rem;color:var(--accent);font-weight:800;letter-spacing:.08em;text-transform:uppercase}.activity-distance{margin:2px 0 4px}.text-btn{color:var(--blue)}
+    .controls{grid-template-columns:1fr auto}.controls .btn-primary{grid-column:1/-1}.btn-finish-hold{--hold-progress:0%;min-width:132px;min-height:42px;padding:8px 10px;border:1px solid #edb6a7;border-radius:11px;background:linear-gradient(90deg,#f6b29f var(--hold-progress),#fff7f4 var(--hold-progress));color:#9c321c;font-size:.72rem;line-height:1.05;font-weight:800;touch-action:none;user-select:none;-webkit-user-select:none}.btn-finish-hold.holding{border-color:#d64a27;color:#6f210f;box-shadow:0 0 0 3px #f15a2a24}.btn-finish-hold:disabled{background:#f4f4f4;border-color:#e1e1e1;color:#9b9b9b}.btn-finish-hold small{display:block;margin-top:3px;font-size:.6rem;font-weight:700;opacity:.75}.hold-note{margin:8px 2px 0;color:#8a5a4e;font-size:.7rem;line-height:1.35}
+    @media(min-width:560px){.controls{grid-template-columns:1fr 1fr auto}.controls .btn-primary{grid-column:auto}}
+    @media(min-width:600px){.home-hero,.tracker-intro{padding-left:30px;padding-right:30px}.content{padding-left:30px;padding-right:30px}.dashboard-week{grid-template-columns:1.25fr 1fr}.goal-card{min-height:128px}.metric-strip{grid-template-columns:1fr;gap:8px}.metric-mini{display:flex;align-items:center;justify-content:space-between;padding:13px 14px}.metric-mini span{margin:0}.recent-card{grid-template-columns:155px 1fr}.recent-map{height:125px}.activity{grid-template-columns:126px 1fr}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">⌁</span>Sentier</div>
+      <div style="display:flex;gap:7px"><button id="installBtn" class="icon-btn" type="button" hidden>Installer</button><button id="soundBtn" class="icon-btn" type="button" aria-pressed="true" title="Activer ou couper les alertes sonores">♪ Alertes</button></div>
+    </header>
+
+    <section id="view-home" class="view active" aria-label="Tableau de bord">
+      <div class="home-hero">
+        <div class="eyebrow">JOURNAL DE MARCHE</div>
+        <h1>Chaque sortie compte.</h1>
+        <p>Suivez vos marches, vos kilomètres et votre régularité, sans créer de compte.</p>
+        <button id="goRecordBtn" class="btn btn-accent" type="button">Enregistrer une activité</button>
+      </div>
+      <div class="content home-content">
+        <div class="section-row"><h2>Cette semaine</h2><span id="homeWeekLabel">Objectif personnel</span></div>
+        <div id="homeWeek"></div>
+        <div class="section-row"><h2>Dernière activité</h2><span>Historique local</span></div>
+        <div id="homeRecent"></div>
+        <div class="privacy-card"><span class="privacy-icon" aria-hidden="true">◈</span><div><b>Vos données restent privées.</b>Les activités sont enregistrées uniquement dans le navigateur de cet appareil. L’export GPX est manuel.</div></div>
+      </div>
+    </section>
+
+    <section id="view-tracker" class="view" aria-label="Enregistrer une marche">
+      <div class="tracker-intro">
+        <div class="eyebrow" style="color:#c84b25">ENREGISTRER</div>
+        <h1>Prêt pour votre sortie ?</h1>
+        <p>Choisissez l’activité puis démarrez le suivi GPS. La pause automatique se déclenche à l’arrêt.</p>
+        <div id="activityTypeSwitch" class="type-switch" role="radiogroup" aria-label="Type d’activité">
+          <button class="type-btn active" data-type="marche" type="button" role="radio" aria-checked="true">Marche</button>
+          <button class="type-btn" data-type="randonnee" type="button" role="radio" aria-checked="false">Randonnée</button>
+        </div>
+      </div>
+      <div class="map-wrap">
+        <div id="liveMap" class="map" aria-label="Carte de suivi"></div>
+        <div id="livePill" class="live-pill"><span class="dot"></span><span id="livePillText">EN MARCHE</span></div>
+        <div id="permissionNote" class="map-note">Autorisez la géolocalisation pour centrer la carte et enregistrer votre marche.</div>
+      </div>
+      <div class="content">
+        <div id="trackerNotice" class="notice hidden" role="status"></div>
+        <div class="stats-grid" aria-live="polite">
+          <div class="stat"><div class="label">Durée nette</div><div class="value" id="duration">00:00:00</div></div>
+          <div class="stat"><div class="label">Distance</div><div class="value"><span id="distance">0,00</span><span class="unit">km</span></div></div>
+          <div class="stat"><div class="label">Allure</div><div class="value" id="pace">—</div></div>
+          <div class="stat"><div class="label">Dénivelé +</div><div class="value"><span id="elevation">0</span><span class="unit">m</span></div></div>
+        </div>
+        <div class="controls">
+          <button id="startBtn" class="btn btn-primary" type="button">Démarrer la marche</button>
+          <button id="pauseBtn" class="btn btn-secondary" type="button" disabled>Pause</button>
+          <button id="finishBtn" class="btn-finish-hold" type="button" disabled aria-describedby="finishHint">Maintenir 3 s<small>pour terminer</small></button>
+        </div>
+        <p id="finishHint" class="hold-note">Pour éviter un arrêt involontaire, maintenez ce bouton appuyé pendant 3 secondes.</p>
+        <p class="hint">Les données restent sur cet appareil. Le GPS consomme davantage de batterie : gardez le téléphone chargé lors d’une longue sortie.</p>
+      </div>
+    </section>
+
+    <section id="view-history" class="view" aria-label="Historique des marches">
+      <div class="content">
+        <h1 class="section-title">Historique</h1>
+        <p class="history-subtitle">Toutes vos activités restent disponibles sur cet appareil.</p>
+        <div id="weeklyPanel"></div>
+        <div id="historyList"></div>
+      </div>
+    </section>
+
+    <nav class="bottom-nav" aria-label="Navigation principale">
+      <button class="nav-btn active" data-view="home" type="button"><span class="nav-icon">⌂</span>Accueil</button>
+      <button class="nav-btn" data-view="tracker" type="button"><span class="nav-icon">●</span>Enregistrer</button>
+      <button class="nav-btn" data-view="history" type="button"><span class="nav-icon">▤</span>Activités</button>
+    </nav>
+  </main>
+
+  <section id="detailOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Détail de la marche">
+    <header class="overlay-head"><button id="closeDetailBtn" class="back-btn" type="button" aria-label="Fermer">‹</button><div id="detailTitle" class="overlay-title">Marche</div></header>
+    <div id="detailMap" class="detail-map"></div>
+    <div class="detail-content">
+      <div class="stats-grid">
+        <div class="stat"><div class="label">Durée nette</div><div id="detailDuration" class="value">—</div></div>
+        <div class="stat"><div class="label">Distance</div><div class="value"><span id="detailDistance">—</span><span class="unit">km</span></div></div>
+        <div class="stat"><div class="label">Allure</div><div id="detailPace" class="value">—</div></div>
+        <div class="stat"><div class="label">Dénivelé +</div><div class="value"><span id="detailElevation">—</span><span class="unit">m</span></div></div>
+      </div>
+      <div class="detail-actions"><button id="detailGpxBtn" class="btn btn-secondary" type="button">Exporter GPX</button><button id="replayBtn" class="btn btn-primary" type="button">Rejouer en 3D</button></div>
+      <section class="splits"><h2>Temps par kilomètre</h2><div id="splitsList"></div></section>
+    </div>
+  </section>
+
+  <section id="replayOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Replay 3D">
+    <header class="overlay-head"><button id="closeReplayBtn" class="back-btn" type="button" aria-label="Fermer le replay">‹</button><div class="overlay-title">Replay 3D avec relief</div></header>
+    <div id="replayMap" class="replay-map"></div>
+    <div id="replayLoading" class="loading hidden">Chargement de la carte et du relief…</div>
+    <div class="replay-panel"><button id="playBtn" class="btn btn-primary" type="button" style="min-height:39px;padding:7px 11px">▶</button><div id="replayReadout" class="replay-readout">0,00 km · 00:00</div><div class="speed-group"><button class="speed active" data-speed="1" type="button">1×</button><button class="speed" data-speed="3" type="button">3×</button><button class="speed" data-speed="8" type="button">8×</button></div></div>
+  </section>
+
+  <script>
+  (() => {
+    'use strict';
+    const APP = 'sentier-v1';
+    const SETTINGS_KEY = `${APP}:settings`;
+    const INDEX_KEY = `${APP}:activities`;
+    const CACHE_PREFIX = `${APP}:tile:`;
+    const MAX_CACHED_TILES = 45;
+    const GPS = { accuracy: 30, jitter: 2, alpha: .4, pauseMps: .3, resumeMps: .6, pauseFixes: 3, altAccuracy: 25, altDelta: 1 };
+    let map = null, liveLine = null, liveMarker = null, detailMap = null, replayMap = null;
+    let watchId = null, timer = null, status = 'idle', activity = null, lastRaw = null, lastSmoothed = null;
+    let stillTicks = 0, autoPaused = false, manuallyPaused = false, lastAnnouncedKm = 0, audioContext = null;
+    const FINISH_HOLD_MS = 3000;
+    let finishHold = { timer:null, animation:null, startedAt:0, active:false };
+    let selectedActivity = null, replay = { index: 0, playing: false, speed: 1, timer: null, coords: [] };
+    const $ = id => document.getElementById(id);
+    const els = { start:$('startBtn'), pause:$('pauseBtn'), finish:$('finishBtn'), duration:$('duration'), distance:$('distance'), pace:$('pace'), elevation:$('elevation'), sound:$('soundBtn'), install:$('installBtn'), note:$('permissionNote'), notice:$('trackerNotice'), pill:$('livePill'), pillText:$('livePillText') };
+    let installPrompt = null;
+
+    /* Stockage local : remplace l'API window.storage du cahier des charges. */
+    function readJSON(key, fallback) { try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } }
+    function writeJSON(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (e) { showNotice('Espace de stockage local saturé : exportez ou supprimez des sorties.', true); return false; } }
+    function settings() { return { soundEnabled: true, weeklyGoalKm: 15, activityType: 'marche', ...readJSON(SETTINGS_KEY, {}) }; }
+    function saveSettings(next) { writeJSON(SETTINGS_KEY, next); updateSoundButton(); }
+    function index() { return readJSON(INDEX_KEY, []); }
+    function getActivity(id) { return readJSON(`${APP}:activity:${id}`, null); }
+    function saveActivity(record) { if (!writeJSON(`${APP}:activity:${record.id}`, record)) return false; const ids = index().filter(id => id !== record.id); ids.unshift(record.id); return writeJSON(INDEX_KEY, ids); }
+    function removeActivity(id) { localStorage.removeItem(`${APP}:activity:${id}`); writeJSON(INDEX_KEY, index().filter(item => item !== id)); }
+    function allActivities() { return index().map(getActivity).filter(Boolean); }
+
+    function haversine(a, b) { const r = 6371000, toRad = x => x * Math.PI / 180, dLat = toRad(b.lat-a.lat), dLng = toRad(b.lng-a.lng); const x = Math.sin(dLat/2)**2 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2; return 2*r*Math.atan2(Math.sqrt(x), Math.sqrt(1-x)); }
+    function fmtTime(sec) { sec = Math.max(0, Math.round(sec || 0)); return [Math.floor(sec/3600), Math.floor(sec%3600/60), sec%60].map((v,i) => String(v).padStart(2,'0')).join(':'); }
+    function fmtShortTime(sec) { sec = Math.max(0, Math.round(sec || 0)); const h = Math.floor(sec/3600); return h ? `${h} h ${String(Math.floor(sec%3600/60)).padStart(2,'0')}` : `${Math.floor(sec/60)} min`; }
+    function fmtKm(m) { return (Math.max(0,m||0)/1000).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+    function fmtPace(distanceM, sec) { if (!distanceM || distanceM < 20 || !sec) return '—'; const p = sec / (distanceM/1000); return `${Math.floor(p/60)}′${String(Math.round(p%60)).padStart(2,'0')}″`; }
+    function fmtDate(iso) { return new Intl.DateTimeFormat('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso)); }
+    function activityLabel(type) { return type === 'randonnee' ? 'Randonnée' : 'Marche'; }
+    function escapeXML(value) { return String(value).replace(/[<>&'\"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
+    function activeSeconds() { if (!activity) return 0; const end = status === 'paused' ? activity.pausedAt : Date.now(); return Math.max(0,(end - activity.startedAt - activity.pausedMs)/1000); }
+    function showNotice(message, persistent=false) { els.notice.textContent = message; els.notice.classList.remove('hidden'); if (!persistent) setTimeout(() => els.notice.classList.add('hidden'), 6000); }
+    function updateSoundButton() { const on = settings().soundEnabled; els.sound.textContent = on ? '♪ Alertes' : '♩ Alertes'; els.sound.setAttribute('aria-pressed', String(on)); }
+    function updateActivityTypeSwitch() { const chosen=settings().activityType; document.querySelectorAll('.type-btn').forEach(button=>{ const active=button.dataset.type===chosen; button.classList.toggle('active',active); button.setAttribute('aria-checked',String(active)); }); }
+    function selectActivityType(type) { if (!['marche','randonnee'].includes(type)) return; saveSettings({...settings(),activityType:type}); updateActivityTypeSwitch(); }
+    function setWeeklyGoal() { const current=Number(settings().weeklyGoalKm)||15; const value=window.prompt('Objectif de distance pour cette semaine (en kilomètres) :',String(current)); if(value===null)return; const goal=Number(String(value).trim().replace(',','.')); if(!Number.isFinite(goal)||goal<1||goal>500){ window.alert('Indiquez une distance comprise entre 1 et 500 km.'); return; } saveSettings({...settings(),weeklyGoalKm:Math.round(goal*10)/10}); renderHome(); }
+
+    function cacheKey(url) { return CACHE_PREFIX + btoa(unescape(encodeURIComponent(url))).replace(/=+$/,''); }
+    function pruneTileCache() { const entries = []; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k && k.startsWith(CACHE_PREFIX)) entries.push([k,Number(localStorage.getItem(`${k}:at`)||0)]); } entries.sort((a,b)=>a[1]-b[1]); while(entries.length>MAX_CACHED_TILES){ const [key] = entries.shift(); localStorage.removeItem(key); localStorage.removeItem(`${key}:at`); } }
+    function installCachedTiles() {
+      if (!window.L) return;
+      const CachedLayer = L.TileLayer.extend({
+        createTile(coords, done) {
+          const tile = document.createElement('img'); tile.alt=''; tile.setAttribute('role','presentation');
+          const url = this.getTileUrl(coords), key = cacheKey(url), cached = localStorage.getItem(key);
+          tile.onload = () => done(null,tile); tile.onerror = () => done(new Error('Tuile indisponible'),tile);
+          if (cached) { localStorage.setItem(`${key}:at`,String(Date.now())); tile.src=cached; return tile; }
+          tile.crossOrigin='anonymous'; tile.src=url;
+          fetch(url, {mode:'cors'}).then(r=>r.blob()).then(blob => { if(blob.size>60000) return; const reader=new FileReader(); reader.onload=()=>{ try {localStorage.setItem(key,reader.result);localStorage.setItem(`${key}:at`,String(Date.now()));pruneTileCache();}catch(_){ } }; reader.readAsDataURL(blob); }).catch(()=>{});
+          return tile;
+        }
+      });
+      window.SentierTileLayer = CachedLayer;
+    }
+    function makeTiles() { return window.SentierTileLayer ? new window.SentierTileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}) : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}); }
+
+    function requiresSecureContext() { return location.protocol === 'file:' || !window.isSecureContext; }
+    function secureContextMessage() { return 'Le GPS exige la version PWA ouverte depuis une adresse HTTPS. Un fichier ouvert directement ne peut pas être installé ni accéder au GPS de façon fiable.'; }
+    function initMap() {
+      if (!window.L) { $('liveMap').innerHTML='<div class="map-fallback">La carte n’a pas pu être chargée. Le suivi GPS et l’enregistrement restent disponibles.</div>'; return; }
+      installCachedTiles(); map = L.map('liveMap',{zoomControl:false,attributionControl:true}).setView([45.2,5.8],12); L.control.zoom({position:'bottomright'}).addTo(map); makeTiles().addTo(map);
+      requestLocation(false);
+    }
+    function requestLocation(showError=true) { if (requiresSecureContext()) { els.note.textContent=secureContextMessage();els.note.classList.remove('hidden');if(showError)showNotice(secureContextMessage(),true);return; } if (!navigator.geolocation) { if(showError) showNotice('La géolocalisation n’est pas disponible dans ce navigateur.',true); return; } navigator.geolocation.getCurrentPosition(p => { const c={lat:p.coords.latitude,lng:p.coords.longitude}; if(map) map.setView(c,16); els.note.classList.add('hidden'); }, e => { if(showError) showNotice(locationError(e),true); }); }
+    function locationError(e) { if(requiresSecureContext()) return secureContextMessage(); return e && e.code===1 ? 'Géolocalisation refusée. Autorisez la localisation précise pour Sentier dans les réglages Android, puis réessayez.' : 'Position GPS indisponible pour le moment. Vérifiez le signal et réessayez.'; }
+    function setLiveMarker(point) { if(!map || !window.L) return; const ll=[point.lat,point.lng]; if(!liveMarker){ const icon=L.divIcon({className:'',html:'<div class="position-marker"></div>',iconSize:[16,16],iconAnchor:[8,8]}); liveMarker=L.marker(ll,{icon,interactive:false}).addTo(map); } else liveMarker.setLatLng(ll); }
+    function drawLivePath() { if(!map || !activity || !window.L) return; const ll=activity.points.map(p=>[p.lat,p.lng]); if(!liveLine) liveLine=L.polyline(ll,{color:'#e76f51',weight:5,lineCap:'round',lineJoin:'round'}).addTo(map); else liveLine.setLatLngs(ll); }
+
+    function ensureAudio() { if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); if(audioContext.state==='suspended') audioContext.resume(); }
+    function announceKm() { if(!settings().soundEnabled) return; if(navigator.vibrate) navigator.vibrate([180,80,180]); try { ensureAudio(); const o=audioContext.createOscillator(), g=audioContext.createGain(); o.frequency.value=880; g.gain.setValueAtTime(.0001,audioContext.currentTime); g.gain.exponentialRampToValueAtTime(.12,audioContext.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.3); o.connect(g).connect(audioContext.destination); o.start(); o.stop(audioContext.currentTime+.31); } catch (_) {} }
+    function smooth(raw) { if(!lastSmoothed) return {...raw}; return {...raw,lat:GPS.alpha*raw.lat+(1-GPS.alpha)*lastSmoothed.lat,lng:GPS.alpha*raw.lng+(1-GPS.alpha)*lastSmoothed.lng}; }
+    function estimateSpeed(raw) { if(Number.isFinite(raw.speed) && raw.speed >=0) return raw.speed; if(!lastRaw) return null; const seconds=(raw.t-lastRaw.t)/1000; return seconds>0 ? haversine(lastRaw,raw)/seconds : null; }
+    function updateAutoPause(speed) { if(manuallyPaused || speed===null) return; if(status==='tracking') { stillTicks = speed < GPS.pauseMps ? stillTicks+1 : 0; if(stillTicks>=GPS.pauseFixes) enterPause(true); } else if(status==='paused' && autoPaused && speed>GPS.resumeMps) exitPause(true); }
+    function updateElevation(raw) { if(!Number.isFinite(raw.alt) || (Number.isFinite(raw.altAccuracy) && raw.altAccuracy>GPS.altAccuracy)) return; if(activity.lastAltitude!==null) { const delta=raw.alt-activity.lastAltitude; if(delta>=GPS.altDelta) activity.elevGain += delta; } activity.lastAltitude=raw.alt; }
+    function onPosition(pos) {
+      const c=pos.coords, raw={lat:c.latitude,lng:c.longitude,t:pos.timestamp||Date.now(),accuracy:c.accuracy,speed:c.speed,alt:c.altitude,altAccuracy:c.altitudeAccuracy};
+      setLiveMarker(raw); if(!activity) { els.note.classList.add('hidden'); return; }
+      if(Number.isFinite(raw.accuracy) && raw.accuracy>GPS.accuracy) { showNotice(`Précision GPS insuffisante (${Math.round(raw.accuracy)} m). Point ignoré.`); return; }
+      const speed=estimateSpeed(raw); updateAutoPause(speed); lastRaw=raw; if(status!=='tracking') return;
+      const point=smooth(raw), previous=lastSmoothed;
+      if(previous && haversine(previous,point)<GPS.jitter) return;
+      point.elapsed=activeSeconds(); activity.points.push(point); if(previous) activity.distance += haversine(previous,point); lastSmoothed=point; updateElevation(raw); drawLivePath();
+      const km=Math.floor(activity.distance/1000); if(km>lastAnnouncedKm) { lastAnnouncedKm=km; announceKm(); } renderStats();
+      if(map && activity.points.length>1) map.panTo([raw.lat,raw.lng],{animate:true,duration:.3});
+    }
+    function onPositionError(e) { if(status!=='idle') showNotice(locationError(e),true); }
+    function renderStats() { const sec=activeSeconds(), d=activity?activity.distance:0; els.duration.textContent=fmtTime(sec); els.distance.textContent=fmtKm(d); els.pace.textContent=fmtPace(d,sec); els.elevation.textContent=Math.round(activity?activity.elevGain:0); }
+    function resetFinishHoldUI() { els.finish.classList.remove('holding'); els.finish.style.setProperty('--hold-progress','0%'); els.finish.innerHTML='Maintenir 3 s<small>pour terminer</small>'; }
+    function cancelFinishHold() { if(finishHold.timer!==null)clearTimeout(finishHold.timer); if(finishHold.animation!==null)cancelAnimationFrame(finishHold.animation); const wasActive=finishHold.active; finishHold={timer:null,animation:null,startedAt:0,active:false}; resetFinishHoldUI(); return wasActive; }
+    function animateFinishHold() { if(!finishHold.active)return; const elapsed=performance.now()-finishHold.startedAt, progress=Math.min(100,elapsed/FINISH_HOLD_MS*100), remaining=Math.max(0,Math.ceil((FINISH_HOLD_MS-elapsed)/1000)); els.finish.style.setProperty('--hold-progress',`${progress}%`); els.finish.innerHTML=`Maintenez…<small>${remaining} s restantes</small>`; finishHold.animation=requestAnimationFrame(animateFinishHold); }
+    function startFinishHold(event) { if(!activity||status==='idle'||finishHold.active||els.finish.disabled)return; event.preventDefault(); finishHold.active=true;finishHold.startedAt=performance.now(); els.finish.classList.add('holding'); if(event.pointerId!==undefined&&els.finish.setPointerCapture){try{els.finish.setPointerCapture(event.pointerId);}catch(_){}} animateFinishHold(); finishHold.timer=setTimeout(()=>{if(!finishHold.active)return; if(finishHold.animation!==null)cancelAnimationFrame(finishHold.animation); finishHold={timer:null,animation:null,startedAt:0,active:false}; resetFinishHoldUI(); finishTracking();},FINISH_HOLD_MS); }
+    function setStatusUI() { const live=status!=='idle'; if(!live)cancelFinishHold(); els.start.disabled=live; els.pause.disabled=!live; els.finish.disabled=!live; if(!finishHold.active)resetFinishHoldUI(); els.start.classList.toggle('tracking',live); els.pause.textContent=status==='paused' ? 'Reprendre' : 'Pause'; els.pill.classList.toggle('show',live); els.pill.classList.toggle('paused',status==='paused'); els.pillText.textContent=status==='paused' ? (autoPaused?'PAUSE AUTO':'EN PAUSE') : 'EN MARCHE'; }
+    function startTracking() {
+      if(requiresSecureContext()) { showNotice(secureContextMessage(),true); return; }
+      if(!navigator.geolocation) { showNotice('Ce navigateur ne propose pas de géolocalisation.',true); return; }
+      ensureAudio(); activity={id:String(Date.now()),date:new Date().toISOString(),type:settings().activityType||'marche',startedAt:Date.now(),pausedAt:null,pausedMs:0,distance:0,elevGain:0,lastAltitude:null,points:[]}; status='tracking'; lastRaw=null;lastSmoothed=null;stillTicks=0;autoPaused=false;manuallyPaused=false;lastAnnouncedKm=0;
+      if(liveLine && map) { map.removeLayer(liveLine); liveLine=null; } navigator.geolocation.getCurrentPosition(onPosition,onPositionError,{enableHighAccuracy:true,maximumAge:0,timeout:10000}); watchId=navigator.geolocation.watchPosition(onPosition,onPositionError,{enableHighAccuracy:true,maximumAge:0,timeout:10000}); timer=setInterval(renderStats,1000); setStatusUI(); els.note.classList.add('hidden'); showNotice('Suivi démarré. Attendez quelques secondes pour une bonne précision GPS.');
+    }
+    function enterPause(automatic=false) { if(status!=='tracking' || !activity) return; activity.pausedAt=Date.now(); status='paused';autoPaused=automatic;manuallyPaused=!automatic;setStatusUI(); if(!automatic) showNotice('Marche en pause.'); else showNotice('Pause automatique : arrêt détecté.'); }
+    function exitPause(automatic=false) { if(status!=='paused' || !activity) return; activity.pausedMs+=Date.now()-activity.pausedAt;activity.pausedAt=null;status='tracking';autoPaused=false;if(!automatic) manuallyPaused=false;stillTicks=0;setStatusUI(); if(automatic) showNotice('Reprise automatique.'); }
+    function togglePause() { status==='tracking' ? enterPause(false) : exitPause(false); }
+    function computeSplits(points, totalDistance) { if(points.length<2 || totalDistance<1000) return []; const splits=[], targets=Math.floor(totalDistance/1000); let travelled=0, target=1000, last=points[0]; for(let i=1;i<points.length && splits.length<targets;i++){ const current=points[i], segment=haversine(last,current); while(segment && travelled+segment>=target && splits.length<targets){ const ratio=(target-travelled)/segment; const a=Number.isFinite(last.elapsed)?last.elapsed:(last.t-points[0].t)/1000; const b=Number.isFinite(current.elapsed)?current.elapsed:(current.t-points[0].t)/1000; const crossing=a+(b-a)*ratio; const prior=splits.length ? splits[splits.length-1].elapsed : 0; splits.push({km:splits.length+1,sec:crossing-prior,elapsed:crossing}); target+=1000; } travelled+=segment;last=current; } return splits; }
+    function finishTracking() {
+      if(!activity) return; if(status==='paused') { activity.pausedMs+=Date.now()-activity.pausedAt; activity.pausedAt=null; }
+      if(watchId!==null) navigator.geolocation.clearWatch(watchId); clearInterval(timer); watchId=null;timer=null; const record={id:activity.id,date:activity.date,type:activity.type||'marche',distanceM:Math.round(activity.distance),durationSec:Math.round((Date.now()-activity.startedAt-activity.pausedMs)/1000),elevGainM:Math.round(activity.elevGain),points:activity.points.map(p=>({lat:p.lat,lng:p.lng,t:p.t,elapsed:p.elapsed,alt:Number.isFinite(p.alt)?p.alt:null})),splits:computeSplits(activity.points,activity.distance)};
+      if(record.points.length===0) { resetTracker(); showNotice('Aucun point GPS exploitable : sortie non enregistrée.',true); return; }
+      saveActivity(record); resetTracker(); showNotice(`Marche enregistrée : ${fmtKm(record.distanceM)} km.`); switchView('history');
+    }
+    function resetTracker() { status='idle';activity=null;lastRaw=null;lastSmoothed=null;stillTicks=0;autoPaused=false;manuallyPaused=false;renderStats();setStatusUI(); }
+
+    function toGPX(a) { const name=`${activityLabel(a.type)} ${new Date(a.date).toLocaleDateString('fr-FR')}`; const points=a.points.map(p=>`      <trkpt lat="${p.lat.toFixed(7)}" lon="${p.lng.toFixed(7)}">${Number.isFinite(p.alt)?`\n        <ele>${p.alt.toFixed(1)}</ele>`:''}\n        <time>${new Date(p.t).toISOString()}</time>\n      </trkpt>`).join('\n'); return `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Sentier" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n  <metadata><time>${escapeXML(a.date)}</time></metadata>\n  <trk><name>${escapeXML(name)}</name><trkseg>\n${points}\n  </trkseg></trk>\n</gpx>`; }
+    function downloadGPX(a) { const blob=new Blob([toGPX(a)],{type:'application/gpx+xml;charset=utf-8'}), url=URL.createObjectURL(blob), link=document.createElement('a'); link.href=url;link.download=`sentier-${a.date.slice(0,10)}.gpx`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000); }
+
+    function isoMonday(date) { const d=new Date(date);d.setHours(0,0,0,0); const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d; }
+    function weekKey(date) { const d=isoMonday(date);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function weeklyStats(activities) { const mapWeeks=new Map(); activities.forEach(a=>{ const key=weekKey(a.date), item=mapWeeks.get(key)||{distance:0,duration:0,count:0,date:isoMonday(a.date)};item.distance+=a.distanceM;item.duration+=a.durationSec;item.count++;mapWeeks.set(key,item); }); const now=isoMonday(new Date()), keys=[];for(let i=5;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-7*i);keys.push(weekKey(d));} return {current:mapWeeks.get(weekKey(new Date()))||{distance:0,duration:0,count:0}, bars:keys.map(k=>({key:k,...(mapWeeks.get(k)||{distance:0,duration:0,count:0,date:new Date(k)})}))}; }
+    function renderWeekly(activities) { const stats=weeklyStats(activities), max=Math.max(1,...stats.bars.map(x=>x.distance)); const labels=['-5','-4','-3','-2','-1','Cette']; $('weeklyPanel').innerHTML=`<section class="week-card"><h2>Cette semaine</h2><div class="week-totals"><div class="week-total"><b>${fmtKm(stats.current.distance)} km</b><span>distance</span></div><div class="week-total"><b>${fmtShortTime(stats.current.duration)}</b><span>durée</span></div><div class="week-total"><b>${stats.current.count}</b><span>sortie${stats.current.count>1?'s':''}</span></div></div><div class="chart" aria-label="Distance des six dernières semaines">${stats.bars.map((b,i)=>`<div class="bar-wrap"><div class="bar ${i===5?'current':''}" style="height:${Math.max(2,Math.round(b.distance/max*54))}px" title="${fmtKm(b.distance)} km"></div><span class="bar-label">${labels[i]}</span></div>`).join('')}</div></section>`; }
+    function renderHome() {
+      const activities=allActivities(), week=weeklyStats(activities).current, goalKm=Number(settings().weeklyGoalKm)||15;
+      const doneKm=week.distance/1000, progress=Math.min(100,Math.round(doneKm/goalKm*100)), month=new Date(), monthStart=new Date(month.getFullYear(),month.getMonth(),1);
+      const monthActivities=activities.filter(a=>new Date(a.date)>=monthStart), monthDistance=monthActivities.reduce((sum,a)=>sum+a.distanceM,0);
+      $('homeWeekLabel').textContent=`Objectif : ${goalKm.toLocaleString('fr-FR',{maximumFractionDigits:1})} km`;
+      $('homeWeek').innerHTML=`<div class="dashboard-week"><section class="goal-card"><div class="goal-ring" style="--progress:${progress}%"><strong>${fmtKm(week.distance)}</strong><small>km faits</small></div><div class="goal-copy"><div class="small-label">PROGRESSION</div><h3>${progress}% de l’objectif</h3><p>${Math.max(0,goalKm-doneKm).toLocaleString('fr-FR',{maximumFractionDigits:1})} km encore à parcourir cette semaine.</p><button id="goalEditBtn" class="goal-edit" type="button">Modifier l’objectif</button></div></section><div class="metric-strip"><div class="metric-mini"><b>${week.count}</b><span>sortie${week.count>1?'s':''}</span></div><div class="metric-mini"><b>${fmtShortTime(week.duration)}</b><span>en mouvement</span></div><div class="metric-mini"><b>${fmtKm(monthDistance)}</b><span>ce mois</span></div></div></div>`;
+      const recent=activities[0], recentBox=$('homeRecent');
+      if(!recent){ recentBox.innerHTML='<div class="empty-compact"><b>Votre journal est prêt.</b><br>Enregistrez votre première marche pour voir votre progression apparaître ici.</div>'; }
+      else { recentBox.innerHTML=`<button class="recent-card" type="button" data-activity-id="${recent.id}" aria-label="Ouvrir votre dernière activité"><div class="recent-map"><canvas id="home-preview-${recent.id}"></canvas></div><div class="recent-main"><div class="recent-kicker">${activityLabel(recent.type)}</div><div class="recent-title">${fmtKm(recent.distanceM)} km</div><div class="recent-meta">${fmtDate(recent.date)}<br>${fmtShortTime(recent.durationSec)} · ${fmtPace(recent.distanceM,recent.durationSec)} / km · +${recent.elevGainM||0} m</div></div></button>`; requestAnimationFrame(()=>{const canvas=$(`home-preview-${recent.id}`);if(canvas)drawPreview(canvas,recent);}); recentBox.querySelector('.recent-card').addEventListener('click',()=>openDetail(recent)); }
+      $('goalEditBtn').addEventListener('click',setWeeklyGoal);
+    }
+    function drawPreview(canvas,a) { const dpr=window.devicePixelRatio||1, rect=canvas.getBoundingClientRect(), w=Math.max(1,rect.width*dpr),h=Math.max(1,rect.height*dpr);canvas.width=w;canvas.height=h;const c=canvas.getContext('2d'), pts=a.points;if(pts.length<2)return;c.clearRect(0,0,w,h);const lats=pts.map(p=>p.lat),lngs=pts.map(p=>p.lng),minLat=Math.min(...lats),maxLat=Math.max(...lats),minLng=Math.min(...lngs),maxLng=Math.max(...lngs),pad=12*dpr,dx=Math.max(maxLng-minLng,.00001),dy=Math.max(maxLat-minLat,.00001);c.strokeStyle='#e76f51';c.lineWidth=3*dpr;c.lineCap='round';c.lineJoin='round';c.beginPath();pts.forEach((p,i)=>{const x=pad+(p.lng-minLng)/dx*(w-pad*2),y=h-pad-(p.lat-minLat)/dy*(h-pad*2);i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke(); }
+    function renderHistory() { const activities=allActivities();renderWeekly(activities);const list=$('historyList'); if(!activities.length){list.innerHTML='<div class="empty"><div class="empty-icon">⌁</div><strong>Aucune activité enregistrée</strong><p>Votre prochaine sortie apparaîtra ici.</p></div>';return;} list.innerHTML=activities.map(a=>`<article class="activity" data-id="${a.id}" tabindex="0" role="button" aria-label="Ouvrir ${activityLabel(a.type).toLowerCase()} du ${fmtDate(a.date)}"><div class="preview"><canvas id="preview-${a.id}"></canvas></div><div class="activity-main"><div class="activity-type">${activityLabel(a.type)}</div><div class="activity-distance">${fmtKm(a.distanceM)} km</div><div class="activity-date">${fmtDate(a.date)}</div><div class="activity-meta">${fmtShortTime(a.durationSec)} · ${fmtPace(a.distanceM,a.durationSec)} / km · +${a.elevGainM||0} m</div><div class="activity-actions"><button class="text-btn export-action" type="button" data-id="${a.id}">Exporter GPX</button><button class="text-btn delete delete-action" type="button" data-id="${a.id}">Supprimer</button></div></div></article>`).join(''); activities.forEach(a=>drawPreview($(`preview-${a.id}`),a)); list.querySelectorAll('.activity').forEach(card=>{card.addEventListener('click',e=>{if(e.target.closest('button'))return;openDetail(getActivity(card.dataset.id));});card.addEventListener('keydown',e=>{if(e.key==='Enter')openDetail(getActivity(card.dataset.id));});});list.querySelectorAll('.export-action').forEach(b=>b.addEventListener('click',()=>downloadGPX(getActivity(b.dataset.id))));list.querySelectorAll('.delete-action').forEach(b=>b.addEventListener('click',()=>{const a=getActivity(b.dataset.id);if(confirm(`Supprimer ${activityLabel(a.type).toLowerCase()} du ${fmtDate(a.date)} ?`)){removeActivity(a.id);renderHistory();renderHome();}})); }
+
+    function openDetail(a) { if(!a)return;selectedActivity=a;$('detailTitle').textContent=`${activityLabel(a.type)} · ${fmtDate(a.date)}`;$('detailDuration').textContent=fmtTime(a.durationSec);$('detailDistance').textContent=fmtKm(a.distanceM);$('detailPace').textContent=fmtPace(a.distanceM,a.durationSec);$('detailElevation').textContent=a.elevGainM||0;$('splitsList').innerHTML=a.splits&&a.splits.length?a.splits.map(s=>`<div class="split-row"><span>Kilomètre ${s.km}</span><b>${fmtTime(s.sec).slice(3)}</b></div>`).join(''):'<div class="hint">Moins d’un kilomètre enregistré.</div>';$('detailOverlay').classList.add('open'); if(!window.L){$('detailMap').innerHTML='<div class="map-fallback">Carte indisponible hors connexion.</div>';return;} setTimeout(()=>{if(detailMap){detailMap.remove();detailMap=null;}$('detailMap').innerHTML='';detailMap=L.map('detailMap',{zoomControl:false});makeTiles().addTo(detailMap);L.control.zoom({position:'bottomright'}).addTo(detailMap);const pts=a.points.map(p=>[p.lat,p.lng]);const line=L.polyline(pts,{color:'#f15a2a',weight:5,lineCap:'round'}).addTo(detailMap);if(pts.length){L.circleMarker(pts[0],{radius:6,color:'#fff',weight:3,fillColor:'#256c9c',fillOpacity:1}).addTo(detailMap);L.circleMarker(pts[pts.length-1],{radius:6,color:'#fff',weight:3,fillColor:'#f15a2a',fillOpacity:1}).addTo(detailMap);pts.length>1?detailMap.fitBounds(line.getBounds(),{padding:[25,25]}):detailMap.setView(pts[0],16);}},80); }
+    function closeDetail() { $('detailOverlay').classList.remove('open');if(detailMap){detailMap.remove();detailMap=null;}selectedActivity=null; }
+
+    function loadMapLibre() { return new Promise((resolve,reject)=>{if(window.maplibregl)return resolve();const css=document.createElement('link');css.rel='stylesheet';css.href='https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.1.0/maplibre-gl.min.css';document.head.append(css);const script=document.createElement('script');script.src='https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.1.0/maplibre-gl.min.js';script.onload=resolve;script.onerror=()=>reject(new Error('Bibliothèque 3D indisponible'));document.head.append(script);}); }
+    async function openReplay() { if(!selectedActivity || selectedActivity.points.length<2){showNotice('Le replay nécessite au moins deux points GPS.');return;}$('replayOverlay').classList.add('open');$('replayLoading').classList.remove('hidden');replay={index:0,playing:false,speed:1,timer:null,coords:selectedActivity.points};updateReplayUI(); try{await loadMapLibre();if(replayMap)replayMap.remove();const points=replay.coords.map(p=>[p.lng,p.lat]);replayMap=new maplibregl.Map({container:'replayMap',style:{version:8,sources:{osm:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'},terrain:{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],tileSize:256,encoding:'terrarium',maxzoom:15},route:{type:'geojson',data:{type:'Feature',properties:{},geometry:{type:'LineString',coordinates:points}}}},layers:[{id:'osm',type:'raster',source:'osm'},{id:'route',type:'line',source:'route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#e76f51','line-width':5}}]},center:points[0],zoom:15,pitch:65,bearing:0});replayMap.on('load',()=>{replayMap.setTerrain({source:'terrain',exaggeration:1.4});replayMap.addSource('cursor',{type:'geojson',data:cursorFeature(points[0])});replayMap.addLayer({id:'cursor',type:'circle',source:'cursor',paint:{'circle-radius':7,'circle-color':'#10281f','circle-stroke-color':'#fff','circle-stroke-width':3}});$('replayLoading').classList.add('hidden');moveReplayCamera();}); }catch(e){$('replayLoading').textContent='Vue 3D indisponible. Vérifiez votre connexion internet.';showNotice('Impossible de charger la vue 3D.',true);} }
+    function cursorFeature(c){return {type:'Feature',properties:{},geometry:{type:'Point',coordinates:c}};}
+    function bearing(a,b){const toRad=x=>x*Math.PI/180,toDeg=x=>x*180/Math.PI,dLng=toRad(b.lng-a.lng),y=Math.sin(dLng)*Math.cos(toRad(b.lat)),x=Math.cos(toRad(a.lat))*Math.sin(toRad(b.lat))-Math.sin(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.cos(dLng);return (toDeg(Math.atan2(y,x))+360)%360;}
+    function moveReplayCamera(){if(!replayMap||!replay.coords.length)return;const p=replay.coords[replay.index],next=replay.coords[Math.min(replay.index+1,replay.coords.length-1)],c=[p.lng,p.lat];if(replayMap.getSource('cursor'))replayMap.getSource('cursor').setData(cursorFeature(c));replayMap.easeTo({center:c,bearing:bearing(p,next),pitch:65,duration:Math.min(500,220/replay.speed),essential:true});updateReplayUI();}
+    function replayStep(){if(!replay.playing)return;replay.index=Math.min(replay.coords.length-1,replay.index+replay.speed);moveReplayCamera();if(replay.index>=replay.coords.length-1){replay.playing=false;updateReplayUI();return;}const current=replay.coords[replay.index],first=replay.coords[0],next=replay.coords[Math.min(replay.index+replay.speed,replay.coords.length-1)];let delay=220/replay.speed;if(current.t&&next.t){delay=Math.max(55,Math.min(1000,(next.t-current.t)/replay.speed));}replay.timer=setTimeout(replayStep,delay);}
+    function toggleReplay(){if(!replayMap)return;replay.playing=!replay.playing;if(replay.playing)replayStep();else clearTimeout(replay.timer);updateReplayUI();}
+    function updateReplayUI(){ $('playBtn').textContent=replay.playing?'Ⅱ':'▶';document.querySelectorAll('.speed').forEach(b=>b.classList.toggle('active',Number(b.dataset.speed)===replay.speed));if(!replay.coords.length){$('replayReadout').textContent='0,00 km · 00:00';return;}const first=replay.coords[0],p=replay.coords[replay.index],km=replay.coords.slice(1,replay.index+1).reduce((n,v,i)=>n+haversine(replay.coords[i],v),0);const elapsed=Number.isFinite(p.elapsed)?p.elapsed:(p.t-first.t)/1000;$('replayReadout').textContent=`${fmtKm(km)} km · ${fmtTime(elapsed).slice(0,5)}`;}
+    function closeReplay(){clearTimeout(replay.timer);replay.playing=false;$('replayOverlay').classList.remove('open');if(replayMap){replayMap.remove();replayMap=null;}$('replayLoading').classList.add('hidden');}
+
+    function switchView(name){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===name));if(name==='home')renderHome();if(name==='history')renderHistory();if(name==='tracker'&&map)setTimeout(()=>map.invalidateSize(),50);}
+    function initPWA(){
+      if(requiresSecureContext()) return;
+      if('serviceWorker' in navigator) navigator.serviceWorker.register('./sentier-service-worker.js').catch(()=>showNotice('Le mode hors ligne n’a pas pu être activé.',true));
+      window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;els.install.hidden=false;});
+      window.addEventListener('appinstalled',()=>{installPrompt=null;els.install.hidden=true;showNotice('Sentier est installé sur cet appareil.');});
+    }
+    function installPWA(){ if(!installPrompt){showNotice('Utilisez le menu du navigateur puis « Installer l’application » ou « Ajouter à l’écran d’accueil ».');return;} installPrompt.prompt();installPrompt.userChoice.finally(()=>{installPrompt=null;els.install.hidden=true;}); }
+    function bind(){els.start.addEventListener('click',startTracking);els.pause.addEventListener('click',togglePause);els.finish.addEventListener('pointerdown',startFinishHold);['pointerup','pointercancel','pointerleave','lostpointercapture'].forEach(name=>els.finish.addEventListener(name,cancelFinishHold));els.finish.addEventListener('keydown',event=>{if((event.key===' '||event.key==='Enter')&&!event.repeat)startFinishHold(event);});els.finish.addEventListener('keyup',event=>{if(event.key===' '||event.key==='Enter')cancelFinishHold();});els.finish.addEventListener('blur',cancelFinishHold);els.sound.addEventListener('click',()=>saveSettings({...settings(),soundEnabled:!settings().soundEnabled}));els.install.addEventListener('click',installPWA);$('goRecordBtn').addEventListener('click',()=>switchView('tracker'));document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));document.querySelectorAll('.type-btn').forEach(b=>b.addEventListener('click',()=>selectActivityType(b.dataset.type)));$('closeDetailBtn').addEventListener('click',closeDetail);$('detailGpxBtn').addEventListener('click',()=>selectedActivity&&downloadGPX(selectedActivity));$('replayBtn').addEventListener('click',openReplay);$('closeReplayBtn').addEventListener('click',closeReplay);$('playBtn').addEventListener('click',toggleReplay);document.querySelectorAll('.speed').forEach(b=>b.addEventListener('click',()=>{replay.speed=Number(b.dataset.speed);updateReplayUI();}));document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelFinishHold();if(status==='tracking')showNotice('Le suivi continue, mais certains navigateurs limitent le GPS en arrière-plan.',true);}});}
+    updateSoundButton();updateActivityTypeSwitch();bind();initPWA();initMap();renderStats();setStatusUI();renderHome();
+  })();
+  </script>
+</body>
+</html>
