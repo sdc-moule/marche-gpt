@@ -2,7 +2,7 @@
   "id": "./marche-tracker.html",
   "name": "Sentier — journal de marche",
   "short_name": "Sentier",
-  "description": "Journal GPS local de marche et randonnée, avec objectifs, historique et export GPX.",
+  "description": "Journal GPS local d’activité, avec objectifs, historique et export GPX.",
   "lang": "fr",
   "dir": "ltr",
   "start_url": "./marche-tracker.html",

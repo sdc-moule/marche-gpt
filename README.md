@@ -1,12 +1,13 @@
 # Sentier — journal GPS de marche
 
-PWA personnelle de marche et randonnée : GPS en direct, tableau de bord hebdomadaire, objectif de distance modifiable, distance, durée, allure, dénivelé positif, auto-pause, historique local, export GPX et replay 3D.
+PWA personnelle de suivi d’activité : GPS en direct, tableau de bord hebdomadaire, objectif de distance modifiable, distance, durée, allure, dénivelé positif, auto-pause, historique local, export GPX et replay 3D.
 
 ## Fonctions
 
 - Suivi GPS haute précision avec filtrage et lissage des points.
+- Pause automatique après 10 secondes sans déplacement ; reprise automatique dès qu’un déplacement est détecté.
 - Tableau de bord personnel : dernière activité, distance mensuelle et objectif hebdomadaire modifiable.
-- Choix entre activité de marche et randonnée avant le départ.
+- Bouton « Démarrer le GPS » immédiatement visible sur l’écran de suivi.
 - Sécurité d’arrêt : le bouton de fin est réduit et doit être maintenu 3 secondes ; le relâcher annule la demande.
 - Pause manuelle et auto-pause à l’arrêt.
 - Distance, durée nette, allure et dénivelé positif.

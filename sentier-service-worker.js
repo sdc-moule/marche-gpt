@@ -1,6 +1,6 @@
 /* Sentier — cache de l'interface PWA. Les fonds de carte restent disponibles
    selon les tuiles déjà chargées et les règles du navigateur. */
-const CACHE_NAME = 'sentier-shell-v3';
+const CACHE_NAME = 'sentier-shell-v5';
 const SHELL = [
   './marche-tracker.html',
   './sentier-manifest.webmanifest',

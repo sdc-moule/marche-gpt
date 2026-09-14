@@ -2,9 +2,11 @@
 
 ## Version journal d’activité
 
-La page d’accueil présente la progression de la semaine, la dernière activité et la distance du mois. L’objectif hebdomadaire est modifiable depuis **Modifier l’objectif**. Avant de démarrer, choisissez **Marche** ou **Randonnée** : ce choix est repris dans l’historique et dans le fichier GPX exporté.
+La page d’accueil présente la progression de la semaine, la dernière activité et la distance du mois. L’objectif hebdomadaire est modifiable depuis **Modifier l’objectif**. Le bouton **Démarrer le GPS** est directement visible dans l’onglet **Suivi**.
 
 Pour terminer une sortie, maintenez le petit bouton **Maintenir 3 s** sans le relâcher. Un relâchement, une sortie du bouton ou un changement d’écran annule la fermeture.
+
+La pause est entièrement automatique : après 10 secondes sans déplacement, le temps net s’arrête ; le suivi reprend automatiquement dès que vous vous remettez à marcher.
 
 ## Pourquoi le GPS ne fonctionnait pas
 
